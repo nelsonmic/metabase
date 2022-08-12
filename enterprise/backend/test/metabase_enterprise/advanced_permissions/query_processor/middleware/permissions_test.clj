@@ -111,8 +111,7 @@
                  (-> (native-download-query) limit-download-result-rows mt/rows count))))))))
 
 (defn- check-download-permisions [query]
-  (:pre #_{:clj-kondo/ignore [:deprecated-var]}
-        (mt/test-qp-middleware ee.qp.perms/check-download-permissions query)))
+  (:pre (mt/test-qp-middleware ee.qp.perms/check-download-permissions query)))
 
 (def ^:private download-perms-error-msg #"You do not have permissions to download the results of this query\.")
 

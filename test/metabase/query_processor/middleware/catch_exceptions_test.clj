@@ -9,7 +9,6 @@
             [metabase.test :as mt]
             [metabase.test.data :as data]
             [metabase.test.data.users :as test.users]
-            [metabase.test.util.log :as tu.log]
             [schema.core :as s]))
 
 (deftest exception-chain-test

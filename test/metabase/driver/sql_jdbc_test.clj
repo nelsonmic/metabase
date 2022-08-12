@@ -7,8 +7,7 @@
             [metabase.models.field :refer [Field]]
             [metabase.models.table :as table :refer [Table]]
             [metabase.query-processor :as qp]
-            [metabase.test :as mt]
-            [metabase.test.util.log :as tu.log]))
+            [metabase.test :as mt]))
 
 (deftest describe-database-test
   (is (= {:tables (set (for [table ["CATEGORIES" "VENUES" "CHECKINS" "USERS"]]

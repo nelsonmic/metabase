@@ -13,8 +13,6 @@
             [metabase.models.table :as table]
             [metabase.server.middleware.util :as mw.util]
             [metabase.test :as mt]
-            [metabase.test.mock.util :as mock.util]
-            [metabase.test.util :as tu]
             [metabase.timeseries-query-processor-test.util :as tqpt]
             [metabase.util :as u]
             [toucan.db :as db]))

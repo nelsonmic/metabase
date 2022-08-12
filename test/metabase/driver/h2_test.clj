@@ -10,7 +10,6 @@
             [metabase.models :refer [Database]]
             [metabase.query-processor :as qp]
             [metabase.test :as mt]
-            [metabase.test.util :as tu]
             [metabase.util.honeysql-extensions :as hx]))
 
 (deftest parse-connection-string-test
