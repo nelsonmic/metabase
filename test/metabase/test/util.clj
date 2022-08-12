@@ -10,7 +10,7 @@
             [colorize.core :as colorize]
             [environ.core :as env]
             [java-time :as t]
-            [metabase.driver :as driver]
+            [medley.core :as m]
             [metabase.models :refer [Card Collection Dashboard DashboardCardSeries Database Dimension Field FieldValues
                                      LoginHistory Metric NativeQuerySnippet Permissions PermissionsGroup PermissionsGroupMembership
                                      PersistedInfo Pulse PulseCard PulseChannel Revision Segment Setting
@@ -528,17 +528,9 @@
   (boolean (when (string? s)
              (re-matches #"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$" s))))
 
-(defn- update-in-if-present
-  "If the path `KS` is found in `M`, call update-in with the original
-  arguments to this function, otherwise, return `M`"
-  [m ks f & args]
-  (if (= ::not-found (get-in m ks ::not-found))
-    m
-    (apply update-in m ks f args)))
-
 (defn- ^:deprecated round-fingerprint-fields [fprint-type-map decimal-places fields]
   (reduce (fn [fprint field]
-            (update-in-if-present fprint [field] (fn [num]
+            (m/update-existing-in fprint [field] (fn [num]
                                                    (if (integer? num)
                                                      num
                                                      (u/round-to-decimals decimal-places num)))))
@@ -547,33 +539,38 @@
 (defn ^:deprecated round-fingerprint
   "Rounds the numerical fields of a fingerprint to 2 decimal places
 
-  DEPRECATED -- this should no longer be needed; use `metabase.query-processor-test/col` to get the actual real-life
-  fingerprint of the column instead."
+  DEPRECATED -- this should no longer be needed; use [[metabase.test/col]] to get the actual real-life fingerprint of
+  the column instead."
   [field]
   (-> field
-      (update-in-if-present [:fingerprint :type :type/Number] round-fingerprint-fields 2 [:min :max :avg :sd])
+      (m/update-existing-in [:fingerprint :type :type/Number]
+                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields
+                            2 [:min :max :avg :sd])
       ;; quartal estimation is order dependent and the ordering is not stable across different DB engines, hence more
       ;; aggressive trimming
-      (update-in-if-present [:fingerprint :type :type/Number] round-fingerprint-fields 0 [:q1 :q3])
-      (update-in-if-present [:fingerprint :type :type/Text]
-                            round-fingerprint-fields 2
+      (m/update-existing-in [:fingerprint :type :type/Number]
+                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields
+                            0 [:q1 :q3])
+      (m/update-existing-in [:fingerprint :type :type/Text]
+                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields 2
                             [:percent-json :percent-url :percent-email :average-length])))
 
 (defn ^:deprecated round-fingerprint-cols
   "Round fingerprints to a few digits, so it can be included directly in 'expected' parts of tests.
 
-  DEPRECATED -- this should no longer be needed; use `qp.tt/col` to get the actual real-life fingerprint of the
-  column instead."
+  DEPRECATED -- this should no longer be needed; use [[metabase.test/col]] to get the *actual* real-life fingerprint of
+  the column instead."
   ([query-results]
    (if (map? query-results)
      (let [maybe-data-cols (if (contains? query-results :data)
                              [:data :cols]
                              [:cols])]
+       #_{:clj-kondo/ignore [:deprecated-var]}
        (round-fingerprint-cols maybe-data-cols query-results))
-     (map round-fingerprint query-results)))
+     (map #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint query-results)))
 
   ([k query-results]
-   (update-in query-results k #(map round-fingerprint %))))
+   (update-in query-results k #(map #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint %))))
 
 (defn postwalk-pred
   "Transform `form` by applying `f` to each node where `pred` returns true"

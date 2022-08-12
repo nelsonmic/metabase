@@ -41,8 +41,10 @@
    :entity_id      true
    :enabled        true})
 
-(def venue-fingerprints
-  "Fingerprints for the full venues table"
+(def ^:deprecated venue-fingerprints
+  "Fingerprints for the full venues table. These are rounded as if by [[metabase.test.util/round-fingerprint-cols]],
+  which is deprecated! Use [[metabase.test/col]] instead to get the *actual* values of the a given Field's
+  fingerprint."
   {:name        {:global {:distinct-count 100
                           :nil%           0.0},
                  :type   {:type/Text {:percent-json   0.0, :percent-url   0.0,

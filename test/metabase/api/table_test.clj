@@ -493,42 +493,40 @@
                   :dimension_options (default-dimension-options)
                   :fields            (map (comp #(merge (default-card-field-for-venues card-virtual-table-id) %)
                                                 with-field-literal-id)
-                                          [{:name         "NAME"
-                                            :display_name "NAME"
-                                            :base_type    "type/Text"
+                                          [{:name           "NAME"
+                                            :display_name   "NAME"
+                                            :base_type      "type/Text"
                                             :effective_type "type/Text"
-                                            :semantic_type "type/Name"
-                                            :fingerprint  (:name mock.util/venue-fingerprints)
-                                            :field_ref    ["field" "NAME" {:base-type "type/Text"}]}
-                                           {:name         "ID"
-                                            :display_name "ID"
-                                            :base_type    "type/BigInteger"
+                                            :semantic_type  "type/Name"
+                                            :fingerprint    (:fingerprint (mt/col :venues :name))
+                                            :field_ref      ["field" "NAME" {:base-type "type/Text"}]}
+                                           {:name           "ID"
+                                            :display_name   "ID"
+                                            :base_type      "type/BigInteger"
                                             :effective_type "type/BigInteger"
-                                            :semantic_type nil
-                                            :fingerprint  (:id mock.util/venue-fingerprints)
-                                            :field_ref    ["field" "ID" {:base-type "type/BigInteger"}]}
+                                            :semantic_type  nil
+                                            :fingerprint    (:fingerprint (mt/col :venues :id))
+                                            :field_ref      ["field" "ID" {:base-type "type/BigInteger"}]}
                                            (with-numeric-dimension-options
-                                             {:name         "PRICE"
-                                              :display_name "PRICE"
-                                              :base_type    "type/Integer"
+                                             {:name           "PRICE"
+                                              :display_name   "PRICE"
+                                              :base_type      "type/Integer"
                                               :effective_type "type/Integer"
-                                              :semantic_type nil
-                                              :fingerprint  (:price mock.util/venue-fingerprints)
-                                              :field_ref    ["field" "PRICE" {:base-type "type/Integer"}]})
+                                              :semantic_type  nil
+                                              :fingerprint    (:fingerprint (mt/col :venues :price))
+                                              :field_ref      ["field" "PRICE" {:base-type "type/Integer"}]})
                                            (with-coordinate-dimension-options
-                                             {:name         "LATITUDE"
-                                              :display_name "LATITUDE"
-                                              :base_type    "type/Float"
+                                             {:name           "LATITUDE"
+                                              :display_name   "LATITUDE"
+                                              :base_type      "type/Float"
                                               :effective_type "type/Float"
-                                              :semantic_type "type/Latitude"
-                                              :fingerprint  (:latitude mock.util/venue-fingerprints)
-                                              :field_ref    ["field" "LATITUDE" {:base-type "type/Float"}]})])})
+                                              :semantic_type  "type/Latitude"
+                                              :fingerprint    (:fingerprint (mt/col :venues :latitude))
+                                              :field_ref      ["field" "LATITUDE" {:base-type "type/Float"}]})])})
                (->> card
                     u/the-id
                     (format "table/card__%d/query_metadata")
-                    (mt/user-http-request :crowberto :get 200)
-                    (tu/round-fingerprint-cols [:fields])
-                    (mt/round-all-decimals 2))))))))
+                    (mt/user-http-request :crowberto :get 200))))))))
 
 (deftest include-date-dimensions-in-nested-query-test
   (testing "GET /api/table/:id/query_metadata"

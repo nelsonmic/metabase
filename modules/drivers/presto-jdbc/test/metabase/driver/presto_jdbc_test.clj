@@ -18,7 +18,6 @@
             [metabase.test :as mt]
             [metabase.test.data.presto-jdbc :as data.presto-jdbc]
             [metabase.test.fixtures :as fixtures]
-            [metabase.test.util :as tu]
             [toucan.db :as db])
   (:import java.io.File))
 

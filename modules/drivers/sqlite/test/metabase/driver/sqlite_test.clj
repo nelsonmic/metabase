@@ -12,7 +12,6 @@
             [metabase.sync :as sync]
             [metabase.test :as mt]
             [metabase.test.data :as data]
-            [metabase.test.util :as tu]
             [metabase.util :as u]
             [toucan.db :as db]
             [toucan.hydrate :refer [hydrate]]))
