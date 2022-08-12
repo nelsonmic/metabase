@@ -10,7 +10,6 @@
             [colorize.core :as colorize]
             [environ.core :as env]
             [java-time :as t]
-            [medley.core :as m]
             [metabase.models :refer [Card Collection Dashboard DashboardCardSeries Database Dimension Field FieldValues
                                      LoginHistory Metric NativeQuerySnippet Permissions PermissionsGroup PermissionsGroupMembership
                                      PersistedInfo Pulse PulseCard PulseChannel Revision Segment Setting
@@ -523,54 +522,10 @@
   `(do-with-temp-vals-in-db ~model ~object-or-id ~column->temp-value (fn [] ~@body)))
 
 (defn is-uuid-string?
-  "Is string S a valid UUID string?"
+  "Is string `s` a valid UUID string?"
   ^Boolean [^String s]
   (boolean (when (string? s)
              (re-matches #"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$" s))))
-
-(defn- ^:deprecated round-fingerprint-fields [fprint-type-map decimal-places fields]
-  (reduce (fn [fprint field]
-            (m/update-existing-in fprint [field] (fn [num]
-                                                   (if (integer? num)
-                                                     num
-                                                     (u/round-to-decimals decimal-places num)))))
-          fprint-type-map fields))
-
-(defn ^:deprecated round-fingerprint
-  "Rounds the numerical fields of a fingerprint to 2 decimal places
-
-  DEPRECATED -- this should no longer be needed; use [[metabase.test/col]] to get the actual real-life fingerprint of
-  the column instead."
-  [field]
-  (-> field
-      (m/update-existing-in [:fingerprint :type :type/Number]
-                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields
-                            2 [:min :max :avg :sd])
-      ;; quartal estimation is order dependent and the ordering is not stable across different DB engines, hence more
-      ;; aggressive trimming
-      (m/update-existing-in [:fingerprint :type :type/Number]
-                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields
-                            0 [:q1 :q3])
-      (m/update-existing-in [:fingerprint :type :type/Text]
-                            #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint-fields 2
-                            [:percent-json :percent-url :percent-email :average-length])))
-
-(defn ^:deprecated round-fingerprint-cols
-  "Round fingerprints to a few digits, so it can be included directly in 'expected' parts of tests.
-
-  DEPRECATED -- this should no longer be needed; use [[metabase.test/col]] to get the *actual* real-life fingerprint of
-  the column instead."
-  ([query-results]
-   (if (map? query-results)
-     (let [maybe-data-cols (if (contains? query-results :data)
-                             [:data :cols]
-                             [:cols])]
-       #_{:clj-kondo/ignore [:deprecated-var]}
-       (round-fingerprint-cols maybe-data-cols query-results))
-     (map #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint query-results)))
-
-  ([k query-results]
-   (update-in query-results k #(map #_{:clj-kondo/ignore [:deprecated-var]} round-fingerprint %))))
 
 (defn postwalk-pred
   "Transform `form` by applying `f` to each node where `pred` returns true"
@@ -582,7 +537,7 @@
                  form))
 
 (defn round-all-decimals
-  "Uses `walk/postwalk` to crawl `data`, looking for any double values, will round any it finds"
+  "Uses [[postwalk-pred]] to crawl `data`, looking for any double values, will round any it finds"
   [decimal-place data]
   (postwalk-pred (some-fn double? decimal?)
                  #(u/round-to-decimals decimal-place %)
