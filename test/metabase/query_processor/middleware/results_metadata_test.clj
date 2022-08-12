@@ -9,7 +9,6 @@
             [metabase.query-processor.util :as qp.util]
             [metabase.sync.analyze.query-results :as qr]
             [metabase.test :as mt]
-            [metabase.test.util :as tu]
             [metabase.util :as u]
             [metabase.util.schema :as su]
             [schema.core :as s]
