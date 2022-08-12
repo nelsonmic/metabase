@@ -457,5 +457,4 @@
 
     ;; FIXME
     :unresolved-symbol    {:level :off}
-    :deprecated-var       {:level :off}
     }}}}
