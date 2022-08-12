@@ -20,7 +20,7 @@
 (deftest timezone-id-test
   (mt/test-driver :sqlite
     (is (= "UTC"
-           (tu/db-timezone-id)))))
+           (driver/db-default-timezone :sqlite (mt/db))))))
 
 (deftest filter-by-date-test
   (testing "Make sure filtering against a LocalDate works correctly in SQLite"

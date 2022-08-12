@@ -278,8 +278,8 @@
   "Return a native query that will fetch the current time (presumably as a string) used by the `current-db-time`
   implementation below.
 
-  DEPRECATED — `metabase.driver/current-db-time`, the method this function provides an implementation for, is itself
-  deprecated. Implement `metabase.driver/db-default-timezone` instead directly."
+  DEPRECATED — [[metabase.driver/current-db-time]], the method this function provides an implementation for, is itself
+  deprecated. Implement [[metabase.driver/db-default-timezone]] instead directly."
   {:arglists '([driver])}
   driver/dispatch-on-initialized-driver
   :hierarchy #'driver/hierarchy)

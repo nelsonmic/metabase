@@ -53,10 +53,10 @@
                   (and (re-matches #"Database .+ not found .+" (.getMessage e))
                        ::exception-thrown)))))))
 
-(deftest db-timezone-id-test
+(deftest db-default-timezone-test
   (mt/test-driver :h2
     (is (= "UTC"
-           (tu/db-timezone-id)))))
+           (driver/db-default-timezone :h2 (mt/db))))))
 
 (deftest disallow-admin-accounts-test
   (testing "Check that we're not allowed to run SQL against an H2 database with a non-admin account"

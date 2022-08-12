@@ -104,7 +104,7 @@
 (deftest db-default-timezone-test
   (mt/test-driver :presto-jdbc
     (is (= "UTC"
-           (tu/db-timezone-id)))))
+           (driver/db-default-timezone :presto-jdbc (mt/db))))))
 
 (deftest template-tag-timezone-test
   (mt/test-driver :presto-jdbc

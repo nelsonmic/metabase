@@ -655,25 +655,6 @@
                                   {:cron-schedule (.getCronExpression ^CronTrigger trigger)
                                    :data          (into {} (.getJobDataMap trigger))}))))}))))))
 
-(defn ^:deprecated db-timezone-id
-  "Return the timezone id from the test database. Must be called with `*driver*` bound,such as via `driver/with-driver`.
-  DEPRECATED — just call `metabase.driver/db-default-timezone` instead directly."
-  []
-  (assert driver/*driver*)
-  (let [db (data/db)]
-    ;; clear the connection pool for SQL JDBC drivers. It's possible that a previous test ran and set the session's
-    ;; timezone to something, then returned the session to the pool. Sometimes that connection's session can remain
-    ;; intact and subsequent queries will continue in that timezone. That causes problems for tests that we can
-    ;; determine the database's timezone.
-    (driver/notify-database-updated driver/*driver* db)
-    (data/dataset test-data
-      (or
-       (driver/db-default-timezone driver/*driver* db)
-       (-> (driver/current-db-time driver/*driver* db)
-           .getChronology
-           .getZone
-           .getID)))))
-
 (defmulti with-model-cleanup-additional-conditions
   "Additional conditions that should be used to restrict which instances automatically get deleted by
   `with-model-cleanup`. Conditions should be a HoneySQL `:where` clause."

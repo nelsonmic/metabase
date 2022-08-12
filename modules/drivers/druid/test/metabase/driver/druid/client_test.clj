@@ -6,7 +6,6 @@
             [metabase.query-processor :as qp]
             [metabase.query-processor.context.default :as default]
             [metabase.test :as mt]
-            [metabase.test.util.log :as tu.log]
             [metabase.timeseries-query-processor-test.util :as tqpt]))
 
 (deftest query-cancelation-test

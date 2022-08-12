@@ -26,7 +26,6 @@
             [metabase.test.data.sql :as sql.tx]
             [metabase.test.data.sql.ddl :as ddl]
             [metabase.test.util :as tu]
-            [metabase.test.util.log :as tu.log]
             [metabase.util :as u]
             [metabase.util.honeysql-extensions :as hx]
             [toucan.db :as db]
@@ -179,7 +178,7 @@
 (deftest timezone-id-test
   (mt/test-driver :oracle
     (is (= "UTC"
-           (tu/db-timezone-id)))))
+           (driver/db-default-timezone :oracle (mt/db))))))
 
 (deftest insert-rows-ddl-test
   (mt/test-driver :oracle

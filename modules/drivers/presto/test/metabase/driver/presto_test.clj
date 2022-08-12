@@ -16,8 +16,6 @@
             [metabase.query-processor :as qp]
             [metabase.test :as mt]
             [metabase.test.fixtures :as fixtures]
-            [metabase.test.util :as tu]
-            [metabase.test.util.log :as tu.log]
             [metabase.util :as u]
             [schema.core :as s]
             [toucan.db :as db]))
@@ -179,7 +177,7 @@
 (deftest db-default-timezone-test
   (mt/test-driver :presto
     (is (= "UTC"
-           (tu/db-timezone-id)))))
+           (driver/db-default-timezone :presto-jdbc (mt/db))))))
 
 (deftest query-cancelation-test
   (mt/test-driver :presto

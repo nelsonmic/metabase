@@ -14,6 +14,7 @@
   (:import clojure.lang.ExceptionInfo))
 
 (defn- check-perms [query]
+  #_{:clj-kondo/ignore [:deprecated-var]}
   (:pre (mt/test-qp-middleware qp.perms/check-query-permissions query)))
 
 (defn- do-with-rasta
