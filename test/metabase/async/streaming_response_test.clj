@@ -85,7 +85,7 @@
     (with-test-driver-db
       (is (= [[10]]
              (mt/rows
-               ((mt/user->client :lucky)
+               (mt/user-http-request :lucky
                 :post 202 "dataset"
                 {:database (mt/id)
                  :type     "native"

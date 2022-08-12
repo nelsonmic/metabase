@@ -11,7 +11,7 @@
             [metabase.models.pulse-test :as pulse-test]
             [metabase.server.middleware.util :as mw.util]
             [metabase.test :as mt]
-            [metabase.test.data.users :refer [fetch-user user->client user->id]]
+            [metabase.test.data.users :refer [fetch-user user->id]]
             [metabase.test.mock.util :refer [pulse-channel-defaults]]
             [metabase.test.util :as tu]
             [metabase.util :as u]
@@ -774,11 +774,11 @@
              (with-alerts-in-readable-collection [alert]
                (with-alert-setup
                  (array-map
-                  :recipients-1 (recipient-emails ((user->client :rasta) :get 200 (alert-question-url card)))
+                  :recipients-1 (recipient-emails (mt/user-http-request :rasta :get 200 (alert-question-url card)))
                   :recipients-2 (do
                                   (et/with-expected-messages 1
                                     (api:unsubscribe! :crowberto 204 alert))
-                                  (recipient-emails ((user->client :crowberto) :get 200 (alert-question-url card))))
+                                  (recipient-emails (mt/user-http-request :crowberto :get 200 (alert-question-url card))))
                   :emails       (et/regex-email-bodies #"https://metabase.com/testmb"
                                                        #"Foo"))))))))
 

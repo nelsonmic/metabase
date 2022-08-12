@@ -167,7 +167,6 @@
  [test.users
   fetch-user
   test-user?
-  user->client
   user->credentials
   user->id
   user-descriptor
