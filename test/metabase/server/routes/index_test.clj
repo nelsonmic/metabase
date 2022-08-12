@@ -2,16 +2,15 @@
   (:require [cheshire.core :as json]
             [clojure.test :refer :all]
             [metabase.server.routes.index :as index]
-            [metabase.test :as mt]
             [metabase.util.i18n :as i18n]))
 
-(deftest localization-json-file-name-test
+(deftest ^:parallel localization-json-file-name-test
   (is (= "frontend_client/app/locales/es.json"
          (#'index/localization-json-file-name "es")))
   (is (= "frontend_client/app/locales/es_MX.json"
          (#'index/localization-json-file-name "es-MX"))))
 
-(deftest load-localization-test
+(deftest ^:parallel load-localization-test
   (testing "make sure `load-localization` is correctly loading i18n files (#9938)"
     (is (= {"charset"      "utf-8"
             "headers"      {"mime-version"              "1.0"
@@ -29,7 +28,7 @@
             (update "translations" select-keys [""])
             (update-in ["translations" ""] select-keys ["Your database has been added!"]))))))
 
-(deftest fallback-localization-test
+(deftest ^:parallel fallback-localization-test
   (testing "if locale does not exist it should log a message and return the 'fallback' localalization (english)"
     (is (= {"headers"      {"language" "xx", "plural-forms" "nplurals=2; plural=(n != 1);"}
             "translations" {"" {"Metabase" {"msgid" "Metabase", "msgstr" ["Metabase"]}}}}
@@ -38,7 +37,7 @@
               (#'index/load-localization nil))
             json/parse-string)))))
 
-(deftest english-test
+(deftest ^:parallel english-test
   (testing "english should return the fallback localization (english)"
     (is (= {"headers"      {"language" "en", "plural-forms" "nplurals=2; plural=(n != 1);"}
             "translations" {"" {"Metabase" {"msgid" "Metabase", "msgstr" ["Metabase"]}}}}
@@ -47,7 +46,7 @@
               (#'index/load-localization nil))
             json/parse-string)))))
 
-(deftest override-localization-test
+(deftest ^:parallel override-localization-test
   (testing "a valid override is honored no matter what the user locale is"
     (is (= {"charset"      "utf-8"
             "headers"      {"mime-version"              "1.0"
