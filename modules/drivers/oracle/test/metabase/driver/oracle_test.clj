@@ -169,8 +169,7 @@
                             ;; doesn't wrap every exception in an SshdException
                             :tunnel-port    21212
                             :tunnel-user    "bogus"}]
-               (tu.log/suppress-output
-                (driver.u/can-connect-with-details? engine details :throw-exceptions)))
+               (driver.u/can-connect-with-details? engine details :throw-exceptions))
              (catch Throwable e
                (loop [^Throwable e e]
                  (or (when (instance? java.net.ConnectException e)

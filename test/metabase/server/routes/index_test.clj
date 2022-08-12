@@ -33,11 +33,10 @@
   (testing "if locale does not exist it should log a message and return the 'fallback' localalization (english)"
     (is (= {"headers"      {"language" "xx", "plural-forms" "nplurals=2; plural=(n != 1);"}
             "translations" {"" {"Metabase" {"msgid" "Metabase", "msgstr" ["Metabase"]}}}}
-           (mt/suppress-output
-             (some->
-              (binding [i18n/*user-locale* "xx"]
-                (#'index/load-localization nil))
-              json/parse-string))))))
+           (some->
+            (binding [i18n/*user-locale* "xx"]
+              (#'index/load-localization nil))
+            json/parse-string)))))
 
 (deftest english-test
   (testing "english should return the fallback localization (english)"
@@ -69,8 +68,7 @@
   (testing "an invalid override causes a fallback to English"
     (is (= {"headers"      {"language" "yy", "plural-forms" "nplurals=2; plural=(n != 1);"}
             "translations" {"" {"Metabase" {"msgid" "Metabase", "msgstr" ["Metabase"]}}}}
-           (mt/suppress-output
-             (some->
-              (binding [i18n/*user-locale* "xx"]
-                (#'index/load-localization "yy"))
-              json/parse-string))))))
+           (some->
+            (binding [i18n/*user-locale* "xx"]
+              (#'index/load-localization "yy"))
+            json/parse-string)))))

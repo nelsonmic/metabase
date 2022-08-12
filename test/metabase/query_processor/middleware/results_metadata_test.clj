@@ -16,9 +16,6 @@
             [schema.core :as s]
             [toucan.db :as db]))
 
-(use-fixtures :each (fn [thunk]
-                      (mt/suppress-output (thunk))))
-
 (defn- card-metadata [card]
   (db/select-one-field :result_metadata Card :id (u/the-id card)))
 

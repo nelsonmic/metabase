@@ -220,7 +220,6 @@
  [tu.log
   ns-log-level
   set-ns-log-level!
-  suppress-output
   with-log-messages-for-level
   with-log-level]
 
