@@ -61,7 +61,10 @@
    rf
    [(qr/insights-rf orig-metadata)]
    (fn combine [result {:keys [metadata insights]}]
-     (let [metadata (merge-final-column-metadata (-> result :data :cols) metadata)]
+     ;; Fields with remapped_from attribute are not real fields that exists in the table,
+     ;; rather they were created by [[metabase.query-processor.middleware.add-dimension-projections/remap-results]] middleware.
+     (let [cols-metadata (filter #(not (:remapped_from %)) (get-in result [:data :cols]))
+           metadata      (merge-final-column-metadata cols-metadata metadata)]
        (record! metadata)
        (rf (cond-> result
              (map? result)
