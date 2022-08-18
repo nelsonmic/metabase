@@ -31,7 +31,7 @@
    ;; effective_type, coercion, etc don't go here. probably best to rename base_type to effective type in the return
    ;; from the metadata but that's for another day
    ;; where this column came from in the original query.
-   :source                         (s/enum :aggregation :fields :breakout :native)
+   (s/optional-key :source)        (s/enum :aggregation :fields :breakout :native)
    ;; a field clause that can be used to refer to this Field if this query is subsequently used as a source query.
    ;; Added by this middleware as one of the last steps.
    (s/optional-key :field_ref)     mbql.s/FieldOrAggregationReference
@@ -620,7 +620,9 @@
   this namespace."
   [query {cols-returned-by-driver :cols, :as result}]
   (deduplicate-cols-names
-   (merge-cols-returned-by-driver (column-info query result) cols-returned-by-driver)))
+    (merge-cols-returned-by-driver (map (fn [col] (if (= :aggregation (:source col))
+                                                    (dissoc col :source)
+                                                    col)) (column-info query result)) cols-returned-by-driver)))
 
 (defn base-type-inferer
   "Native queries don't have the type information from the original `Field` objects used in the query.
