@@ -19,6 +19,7 @@
             [metabase.query-processor.pivot :as qp.pivot]
             [metabase.query-processor.streaming :as qp.streaming]
             [metabase.query-processor.util :as qp.util]
+            [metabase.sync.analyze.query-results :as qr]
             [metabase.shared.models.visualization-settings :as mb.viz]
             [metabase.util :as u]
             [metabase.util.i18n :refer [trs tru]]
@@ -40,7 +41,7 @@
     source-card-id))
 
 (defn- run-query-async
-  [{:keys [database], :as query}
+  [{:keys [database metadata], :as query}
    & {:keys [context export-format qp-runner]
       :or   {context       :ad-hoc
              export-format :api
@@ -63,17 +64,20 @@
                                 :context     context
                                 :card-id     source-card-id}
                          (:dataset source-card)
-                         (assoc :metadata/dataset-metadata (:result_metadata source-card)))]
+                         (assoc :metadata/dataset-metadata (:result_metadata source-card))
+
+                         metadata
+                         (assoc :metadata/dataset-metadata (map mbql.normalize/normalize-source-metadata metadata)))]
     (binding [qp.perms/*card-id* source-card-id]
       (qp.streaming/streaming-response [context export-format]
-        (qp-runner query info context)))))
+        (qp-runner (dissoc query :metadata) info context)))))
 
 (api/defendpoint ^:streaming POST "/"
   "Execute a query and retrieve the results in the usual format."
-  [:as {{:keys [database] :as query} :body}]
-  {database (s/maybe s/Int)}
+  [:as {{:keys [database metadata] :as query} :body}]
+  {database        (s/maybe s/Int)
+   metadata        (s/maybe qr/ResultsMetadata)}
   (run-query-async (update-in query [:middleware :js-int-to-string?] (fnil identity true))))
-
 
 ;;; ----------------------------------- Downloading Query Results in Other Formats -----------------------------------
 
