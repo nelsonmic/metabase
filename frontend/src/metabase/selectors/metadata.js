@@ -202,7 +202,9 @@ export function copyObjects(metadata, objects, instantiate) {
   for (const object of Object.values(objects)) {
     if (object && object.id != null) {
       copies[object.id] = instantiate(object, metadata);
-      copies[object.id].metadata = metadata;
+      if (copies[object.id].metadata == null) {
+        copies[object.id].metadata = metadata;
+      }
     } else {
       console.warn("Missing id:", object);
     }
