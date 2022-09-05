@@ -374,6 +374,45 @@
   [driver [_ arg]]
   (sql.qp/->honeysql driver [:percentile arg 0.5]))
 
+
+;; date extraction functions
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-year]
+  [driver [_ arg]]
+  (date-part :year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-quarter]
+  [driver [_ arg]]
+  (sql.qp/date driver :quarter-of-year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-month]
+  [driver [_ arg]]
+  (sql.qp/date driver :month-of-year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-day]
+  [driver [_ arg]]
+  (sql.qp/date driver :day-of-month (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-day-of-week]
+  [driver [_ arg]]
+  (sql.qp/date driver :day-of-week (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-hour]
+  [driver [_ arg]]
+  (sql.qp/date driver :hour-of-day (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-minute]
+  [driver [_ arg]]
+  (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-minute]
+  [driver [_ arg]]
+  (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-second]
+  [driver [_ arg]]
+  (date-part :second (sql.qp/->honeysql driver arg)))
+
 (defmethod driver.common/current-db-time-date-formatters :sqlserver
   [_]
   (driver.common/create-db-time-formatters "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSZ"))
