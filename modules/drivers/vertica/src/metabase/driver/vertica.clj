@@ -79,19 +79,20 @@
 
 (def ^:private extract-integer (comp hx/->integer extract))
 
-(defmethod sql.qp/date [:vertica :default]         [_ _ expr] expr)
-(defmethod sql.qp/date [:vertica :minute]          [_ _ expr] (date-trunc :minute expr))
-(defmethod sql.qp/date [:vertica :minute-of-hour]  [_ _ expr] (extract-integer :minute expr))
-(defmethod sql.qp/date [:vertica :hour]            [_ _ expr] (date-trunc :hour expr))
-(defmethod sql.qp/date [:vertica :hour-of-day]     [_ _ expr] (extract-integer :hour expr))
-(defmethod sql.qp/date [:vertica :day]             [_ _ expr] (hx/->date expr))
-(defmethod sql.qp/date [:vertica :day-of-month]    [_ _ expr] (extract-integer :day expr))
-(defmethod sql.qp/date [:vertica :day-of-year]     [_ _ expr] (extract-integer :doy expr))
-(defmethod sql.qp/date [:vertica :month]           [_ _ expr] (date-trunc :month expr))
-(defmethod sql.qp/date [:vertica :month-of-year]   [_ _ expr] (extract-integer :month expr))
-(defmethod sql.qp/date [:vertica :quarter]         [_ _ expr] (date-trunc :quarter expr))
-(defmethod sql.qp/date [:vertica :quarter-of-year] [_ _ expr] (extract-integer :quarter expr))
-(defmethod sql.qp/date [:vertica :year]            [_ _ expr] (date-trunc :year expr))
+(defmethod sql.qp/date [:vertica :default]          [_ _ expr] expr)
+(defmethod sql.qp/date [:vertica :second-of-minute] [_ _ expr] (extract-integer :minute expr))
+(defmethod sql.qp/date [:vertica :minute]           [_ _ expr] (date-trunc :minute expr))
+(defmethod sql.qp/date [:vertica :minute-of-hour]   [_ _ expr] (extract-integer :minute expr))
+(defmethod sql.qp/date [:vertica :hour]             [_ _ expr] (date-trunc :hour expr))
+(defmethod sql.qp/date [:vertica :hour-of-day]      [_ _ expr] (extract-integer :hour expr))
+(defmethod sql.qp/date [:vertica :day]              [_ _ expr] (hx/->date expr))
+(defmethod sql.qp/date [:vertica :day-of-month]     [_ _ expr] (extract-integer :day expr))
+(defmethod sql.qp/date [:vertica :day-of-year]      [_ _ expr] (extract-integer :doy expr))
+(defmethod sql.qp/date [:vertica :month]            [_ _ expr] (date-trunc :month expr))
+(defmethod sql.qp/date [:vertica :month-of-year]    [_ _ expr] (extract-integer :month expr))
+(defmethod sql.qp/date [:vertica :quarter]          [_ _ expr] (date-trunc :quarter expr))
+(defmethod sql.qp/date [:vertica :quarter-of-year]  [_ _ expr] (extract-integer :quarter expr))
+(defmethod sql.qp/date [:vertica :year]             [_ _ expr] (date-trunc :year expr))
 
 (defmethod sql.qp/date [:vertica :week]
   [_ _ expr]
@@ -100,6 +101,40 @@
 (defmethod sql.qp/date [:vertica :day-of-week]
   [_ _ expr]
   (sql.qp/adjust-day-of-week :vertica (hsql/call :dayofweek_iso expr)))
+
+;; date extraction functions
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-year]
+  [driver [_ arg]]
+  (extract-integer :year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-quarter]
+  [driver [_ arg]]
+  (sql.qp/date driver :quarter-of-year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-month]
+  [driver [_ arg]]
+  (sql.qp/date driver :month-of-year (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-day]
+  [driver [_ arg]]
+  (sql.qp/date driver :day-of-month (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-day-of-week]
+  [driver [_ arg]]
+  (sql.qp/date driver :day-of-week (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-hour]
+  [driver [_ arg]]
+  (sql.qp/date driver :hour-of-day (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-minute]
+  [driver [_ arg]]
+  (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
+
+(defmethod sql.qp/->honeysql [:sqlserver :get-second]
+  [driver [_ arg]]
+  (sql.qp/date driver :second-of-minute (sql.qp/->honeysql driver arg)))
 
 (defmethod sql.qp/->honeysql [:vertica :concat]
   [driver [_ & args]]
