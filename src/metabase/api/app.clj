@@ -125,9 +125,9 @@
                               (get-in page-type-display [page-type :name]))
                 :scaffold-target ["page" table-id page-type]
                 :ordered_cards (if (= "list" page-type)
-                                 [{:sizeY 1 :sizeX 2 :row 0 :col 16
+                                 [{:size_y 1 :size_x 2 :row 0 :col 16
                                    :visualization_settings {:virtual_card {:display "action-button"}}}
-                                  {:sizeY 6 :sizeX 18 :row 1 :col 0
+                                  {:size_y 6 :size_x 18 :row 1 :col 0
                                    :card_id ["scaffold-target-id" "card" table-id page-type]
                                    :visualization_settings {"click_behavior"
                                                             {"type" "link"
@@ -139,7 +139,7 @@
                                                                                                                        "id" (str "scaffold_" table-id)},
                                                                                                              "id" "scaffold_91"}}
                                                              "targetId" ["scaffold-target-id" "page" table-id "detail"]}}}]
-                                 [{:sizeY 6 :sizeX 18 :row 1 :col 0
+                                 [{:size_y 6 :size_x 18 :row 1 :col 0
                                    :parameter_mappings [{"parameter_id" (str "scaffold_" table-id)
                                                          "card_id" ["scaffold-target-id" "card" table-id "detail"]
                                                          "target" ["dimension", ["field", pk-field-id, nil]]}]
