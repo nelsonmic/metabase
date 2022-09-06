@@ -21,7 +21,7 @@ import { defer } from "metabase/lib/promise";
 import { stripId } from "metabase/lib/formatting";
 import { fetchDashboardParameterValues } from "metabase/dashboard/actions";
 
-import Fields from "metabase/entities/fields";
+import { getMetadata } from "metabase/selectors/metadata";
 
 const MAX_SEARCH_RESULTS = 100;
 
@@ -41,10 +41,10 @@ const mapDispatchToProps = {
 };
 
 function mapStateToProps(state, { fields = [] }) {
+  const metadata = getMetadata(state);
   return {
     fields: fields.map(
-      field =>
-        Fields.selectors.getObject(state, { entityId: field.id }) || field,
+      field => metadata.field(field.id, field.table_id) || field,
     ),
   };
 }

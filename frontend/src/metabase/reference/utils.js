@@ -66,8 +66,8 @@ export const getQuestion = ({
     )
     .updateIn(["display"], display => visualization || display)
     .updateIn(["dataset_query", "query", "breakout"], oldBreakout => {
-      if (fieldId && metadata && metadata.field(fieldId)) {
-        return [metadata.field(fieldId).getDefaultBreakout()];
+      if (fieldId && metadata && metadata.field(fieldId, tableId)) {
+        return [metadata.field(fieldId, tableId).getDefaultBreakout()];
       }
       if (fieldId) {
         return [["field", fieldId, null]];

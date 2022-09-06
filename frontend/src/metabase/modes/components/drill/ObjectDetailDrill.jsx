@@ -49,7 +49,7 @@ function getPKAction({ question, column, objectId, extraData }) {
 }
 
 function getFKTargetField(column, metadata) {
-  const fkField = metadata.field(column.id);
+  const fkField = metadata.field(column.id, column.table_id);
   if (fkField?.target) {
     return fkField.target;
   }
