@@ -405,10 +405,6 @@
   [driver [_ arg]]
   (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-minute]
-  [driver [_ arg]]
-  (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
-
 (defmethod sql.qp/->honeysql [:sqlserver :get-second]
   [driver [_ arg]]
   (date-part :second (sql.qp/->honeysql driver arg)))
