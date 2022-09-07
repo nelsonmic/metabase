@@ -194,35 +194,35 @@
 ;; date extraction functions
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-year]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-year (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-year (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-quarter]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-quarter (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-quarter (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-month]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-month (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-month (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-day]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-day (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-day (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-day-of-week]
   [driver [_ arg]]
-  (sql.qp/date :presto-jdbc :day-of-week (->timestamp driver arg)))
+  (sql.qp/date :presto-jdbc :day-of-week (->timestamp arg)))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-hour]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-hour (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-hour (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-minute]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-minute (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-minute (->timestamp arg)]))
 
 (defmethod sql.qp/->honeysql [:presto-jdbc :get-second]
   [driver [_ arg]]
-  (sql.qp/->honeysql :sql [:get-second (->timestamp driver arg)]))
+  (sql.qp/->honeysql :sql [:get-second (->timestamp arg)]))
 
 ;;; +----------------------------------------------------------------------------------------------------------------+
 ;;; |                                                  Connectivity                                                  |
