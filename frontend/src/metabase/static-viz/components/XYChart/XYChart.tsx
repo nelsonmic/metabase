@@ -6,12 +6,6 @@ import { Group } from "@visx/group";
 import { assoc } from "icepick";
 
 import { formatNumber } from "metabase/static-viz/lib/numbers";
-import {
-  Series,
-  ChartSettings,
-  ChartStyle,
-  HydratedSeries,
-} from "metabase/static-viz/components/XYChart/types";
 import { LineSeries } from "metabase/static-viz/components/XYChart/shapes/LineSeries";
 import { BarSeries } from "metabase/static-viz/components/XYChart/shapes/BarSeries";
 import { AreaSeries } from "metabase/static-viz/components/XYChart/shapes/AreaSeries";
@@ -34,10 +28,21 @@ import {
   sortSeries,
   getLegendColumns,
   calculateStackedItems,
+  getBetterXTicks,
 } from "metabase/static-viz/components/XYChart/utils";
 import { GoalLine } from "metabase/static-viz/components/XYChart/GoalLine";
 import Values from "./Values";
 import { measureText } from "metabase/static-viz/lib/text";
+
+import type {
+  Series,
+  ChartSettings,
+  ChartStyle,
+  HydratedSeries,
+  XScale,
+  XAxisType,
+} from "metabase/static-viz/components/XYChart/types";
+import type { TimeInterval } from "d3-time";
 
 export interface XYChartProps {
   width: number;
@@ -156,6 +161,11 @@ export const XYChart = ({
   const areXTicksHidden = settings.x.tick_display === "hide";
   const xLabelOffset = areXTicksHidden ? -style.axes.ticks.fontSize : undefined;
 
+  const tickValues = getBetterXTicks(
+    settings.x.type,
+    xScale.scale,
+    xTicksCount,
+  );
   return (
     <svg width={width} height={height + legendHeight}>
       {yScaleLeft && (
@@ -229,6 +239,7 @@ export const XYChart = ({
               areXTicksRotated ? xTickWidthLimit : CHART_PADDING
             })`,
           }}
+          tickValues={tickValues}
           tickFormat={value =>
             formatXTick(value.valueOf(), settings.x.type, settings.x.format)
           }
