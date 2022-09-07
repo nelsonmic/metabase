@@ -1,5 +1,5 @@
 (ns metabase.query-processor-test.date-time-zone-functions-test
-  (:require [clojure.test :as t]
+  (:require [clojure.test :refer :all]
             [metabase.test :as mt]
             [metabase.test.data :as data]
             [metabase.test.data.dataset-definitions :as defs]
@@ -36,6 +36,24 @@
 
 (t/deftest extraction-function-tests
   (mt/test-drivers (mt/normal-drivers-with-feature :date-functions)
+
+(deftest using-are
+  (mt/test-drivers #{:oracle}
+    (are [expected expr more-clauses]
+         (testing (format "%s function works as expected on %s" (first expr) (second expr))
+           ;; compare vectors of more than one item (i.e. aggregation results) on the basis of sets
+           (let [compare-on-fn (if (< 1 (count expected)) set identity)]
+             (is (= (compare-on-fn expected) (compare-on-fn (test-date-extract expr more-clauses))))))
+
+         ;; get-year
+         [2016] [:get-year "2016-05-01 01:23:45Z"] nil
+         [2021] [:get-year "2021-12-08"] nil
+         [2014] [:get-year [:field (mt/id :users :last_login) nil]]  {:filter [:= [:field (mt/id :users :id) nil] 10]}
+         [[2014 15]] [:get-year [:field (mt/id :users :last_login) nil]] {:aggregation [[:count]]
+                                                                          :breakout    [[:expression "expr"]]})))
+
+(deftest extraction-function-tests
+  (mt/test-drivers #{:oracle}
     (doseq [[expected expr more-clauses]
             ;; get-year
             [[[2016] [:get-year "2016-05-01 01:23:45Z"]]
@@ -148,32 +166,32 @@
              [[0]
               [:get-second [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 14]}]]]
-      (t/testing (format "%s function works as expected on %s" (first expr) (second expr))
-        ;; compare vectors of more than one item (i.e. aggregation results) on the basis of sets
-        (let [compare-on-fn (if (< 1 (count expected)) set identity)]
-          (t/is (= (compare-on-fn expected) (compare-on-fn (test-date-extract expr more-clauses)))))))
-    (t/testing ":get-second works on fields"
-      ;; need to test this on a separate dataset because test-data doesn't have any
-      ;; timestamp data with second level precision
-      (mt/dataset sample-dataset
-        ;; use Clojure to group the sample timestamps by second to create the expectation
-        ;; since this would be a giant literal map otherwise
-        (let [timestamps       (group-by (fn [^ZonedDateTime review-ts]
-                                           (.getSecond review-ts))
-                                         (->> (tx/get-dataset-definition defs/sample-dataset)
-                                              :table-definitions
-                                              (filter #(= "reviews" (:table-name %)))
-                                              first
-                                              :rows
-                                              (map last)))
-              timestamp-counts (reduce-kv (fn [m k v]
-                                            (assoc m k (count v)))
-                                          {}
-                                          timestamps)]
-          (t/is (= timestamp-counts
-                   (->> (mt/run-mbql-query reviews
-                          {:expressions {"review-second" [:get-second $created_at]}
-                           :aggregation [[:count]]
-                           :breakout    [[:expression "review-second"]]})
-                        mt/rows
-                        (into {})))))))))
+     (testing (format "%s function works as expected on %s" (first expr) (second expr))
+       ;; compare vectors of more than one item (i.e. aggregation results) on the basis of sets
+       (let [compare-on-fn (if (< 1 (count expected)) set identity)]
+         (is (= (compare-on-fn expected) (compare-on-fn (test-date-extract expr more-clauses)))))))
+   (testing ":get-second works on fields"
+     ;; need to test this on a separate dataset because test-data doesn't have any
+     ;; timestamp data with second level precision
+     (mt/dataset sample-dataset
+                 ;; use Clojure to group the sample timestamps by second to create the expectation
+                 ;; since this would be a giant literal map otherwise
+                 (let [timestamps       (group-by (fn [^ZonedDateTime review-ts]
+                                                    (.getSecond review-ts))
+                                                  (->> (tx/get-dataset-definition defs/sample-dataset)
+                                                       :table-definitions
+                                                       (filter #(= "reviews" (:table-name %)))
+                                                       first
+                                                       :rows
+                                                       (map last)))
+                       timestamp-counts (reduce-kv (fn [m k v]
+                                                     (assoc m k (count v)))
+                                                   {}
+                                                   timestamps)]
+                   (is (= timestamp-counts
+                          (->> (mt/run-mbql-query reviews
+                                                  {:expressions {"review-second" [:get-second $created_at]}
+                                                   :aggregation [[:count]]
+                                                   :breakout    [[:expression "review-second"]]})
+                               mt/rows
+                               (into {})))))))))
