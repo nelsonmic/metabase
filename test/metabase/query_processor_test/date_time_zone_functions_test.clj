@@ -50,7 +50,7 @@
                                                                           :breakout    [[:expression "expr"]]})))
 
 (deftest extraction-function-tests
-  (mt/test-drivers #{:oracle}
+  (mt/test-drivers (mt/normal-drivers-with-feature :date-functions)
     (doseq [[expected expr more-clauses]
             ;; get-year
             [[[2016] [:get-year "2016-05-01 01:23:45Z"]]
