@@ -74,8 +74,11 @@
     (hx/cast :timestamp expr)
     expr))
 
+(defn- ->timestamp [honeysql-form]
+  (hx/cast-unless-type-in "timestamp" #{"timestamp" "timestamptz" "date"} honeysql-form))
+
 (defn- date-trunc [unit expr] (hsql/call :date_trunc (hx/literal unit) (cast-timestamp expr)))
-(defn- extract    [unit expr] (hsql/call :extract    unit              expr))
+(defn- extract    [unit expr] (hsql/call :extract    unit              (->timestamp expr)))
 
 (def ^:private extract-integer (comp hx/->integer extract))
 
@@ -104,35 +107,35 @@
 
 ;; date extraction functions
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-year]
+(defmethod sql.qp/->honeysql [:vertica :get-year]
   [driver [_ arg]]
   (extract-integer :year (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-quarter]
+(defmethod sql.qp/->honeysql [:vertica :get-quarter]
   [driver [_ arg]]
   (sql.qp/date driver :quarter-of-year (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-month]
+(defmethod sql.qp/->honeysql [:vertica :get-month]
   [driver [_ arg]]
   (sql.qp/date driver :month-of-year (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-day]
+(defmethod sql.qp/->honeysql [:vertica :get-day]
   [driver [_ arg]]
   (sql.qp/date driver :day-of-month (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-day-of-week]
+(defmethod sql.qp/->honeysql [:vertica :get-day-of-week]
   [driver [_ arg]]
   (sql.qp/date driver :day-of-week (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-hour]
+(defmethod sql.qp/->honeysql [:vertica :get-hour]
   [driver [_ arg]]
   (sql.qp/date driver :hour-of-day (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-minute]
+(defmethod sql.qp/->honeysql [:vertica :get-minute]
   [driver [_ arg]]
   (sql.qp/date driver :minute-of-hour (sql.qp/->honeysql driver arg)))
 
-(defmethod sql.qp/->honeysql [:sqlserver :get-second]
+(defmethod sql.qp/->honeysql [:vertica :get-second]
   [driver [_ arg]]
   (sql.qp/date driver :second-of-minute (sql.qp/->honeysql driver arg)))
 
