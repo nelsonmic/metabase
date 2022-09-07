@@ -34,9 +34,6 @@
       mt/rows
       first)))
 
-(t/deftest extraction-function-tests
-  (mt/test-drivers (mt/normal-drivers-with-feature :date-functions)
-
 (deftest using-are
   (mt/test-drivers #{:oracle}
     (are [expected expr more-clauses]
