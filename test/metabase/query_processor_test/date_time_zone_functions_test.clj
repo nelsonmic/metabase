@@ -38,8 +38,8 @@
   (mt/test-drivers (mt/normal-drivers-with-feature :date-functions)
     (doseq [[expected expr more-clauses]
             ;; get-year
-            [[[2016] [:get-year "2016-05-01 01:23:45Z"]]
-             [[2021] [:get-year "2021-12-08"]]
+            [;[[2016] [:get-year "2016-05-01 01:23:45Z"]]
+             ;[[2021] [:get-year "2021-12-08"]]
              [[2014]
               [:get-year [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 10]}]
@@ -49,8 +49,8 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-quarter
-             [[2] [:get-quarter "2016-05-01 01:23:45Z"]]
-             [[4] [:get-quarter "2021-12-08"]]
+             ;[[2] [:get-quarter "2016-05-01 01:23:45Z"]]
+             ;[[4] [:get-quarter "2021-12-08"]]
              [[1]
               [:get-quarter [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 4]}]
@@ -63,8 +63,8 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-month
-             [[5] [:get-month "2016-05-01 01:23:45Z"]]
-             [[12] [:get-month "2021-12-08"]]
+             ;[[5] [:get-month "2016-05-01 01:23:45Z"]]
+             ;[[12] [:get-month "2021-12-08"]]
              [[1]
               [:get-month [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 4]}]
@@ -81,8 +81,8 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-day
-             [[27] [:get-day "2016-05-27 01:23:45Z"]]
-             [[8] [:get-day "2021-12-08"]]
+             ;[[27] [:get-day "2016-05-27 01:23:45Z"]]
+             ;[[8] [:get-day "2021-12-08"]]
              [[6]
               [:get-day [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 3]}]
@@ -96,8 +96,8 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-day-of-week
-             [[6] [:get-day-of-week "2016-05-27 01:23:45Z"]]
-             [[4] [:get-day-of-week "2021-12-08"]]
+             ;[[6] [:get-day-of-week "2016-05-27 01:23:45Z"]]
+             ;[[4] [:get-day-of-week "2021-12-08"]]
              [[5]
               [:get-day-of-week [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 3]}]
@@ -111,7 +111,7 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-hour
-             [[19] [:get-hour "2016-05-27 19:23:45Z"]]
+             ;[[19] [:get-hour "2016-05-27 19:23:45Z"]]
              [[9]
               [:get-hour [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 7]}]
@@ -131,7 +131,7 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-minute
-             [[23] [:get-minute "2016-05-27 19:23:45Z"]]
+             ;[[23] [:get-minute "2016-05-27 19:23:45Z"]]
              [[45]
               [:get-minute [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 14]}]
@@ -144,7 +144,7 @@
                :breakout    [[:expression "expr"]]}]
 
              ;; get-second
-             [[13] [:get-second "2016-05-27 19:23:13Z"]]
+             ;[[13] [:get-second "2016-05-27 19:23:13Z"]]
              [[0]
               [:get-second [:field (mt/id :users :last_login) nil]]
               {:filter [:= [:field (mt/id :users :id) nil] 14]}]]]
